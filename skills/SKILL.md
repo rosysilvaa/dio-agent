@@ -1,72 +1,70 @@
 ---
-name: unblock-challenge
-description: Use quando o estudante está travado em um Desafio de Código, Desafio de Projeto ou Desafio Criativo da DIO. Conduz o estudante até a solução com dicas graduais, sem entregar a resposta pronta.
+name: web-search
+description: Use quando a dúvida do estudante depende de informação atual ou verificável (versões, lançamentos, mercado, notícias, "em 2026"). Pesquisa na web com o You.com e responde com fontes citadas.
 ---
 
-# Skill: Destravar Desafio
+# Skill: Pesquisa na Web (respostas fundamentadas)
 
-Ajuda o estudante a sair de um ponto de travamento em um desafio, conduzindo o raciocínio sem resolver o desafio por ele.
+Fundamenta a resposta em informação atual da web, usando a busca do You.com, e sempre cita as fontes. Serve para quando a base de conhecimento da DIO e o seu conhecimento interno não bastam, porque o assunto muda com o tempo.
 
-## Princípio mais importante
+## Quando usar
 
-O objetivo do estudante é **aprender**, não apenas concluir. Por isso, nunca entregue a solução completa pronta para copiar e colar. Se você resolver o desafio, o estudante perde justamente o aprendizado que o desafio existe para gerar.
+Use esta skill quando a boa resposta depende de algo atual ou que precisa ser conferido, por exemplo:
 
-Sua função é ser o empurrão que faz a pessoa conseguir continuar sozinha. Você pode melhorar o template ou o código que o estudante compartilhou com comentários sutis e úteis, mas a solução final é sempre dele.
+- versões atuais de uma linguagem, framework ou ferramenta (ex.: "qual a versão estável do Node hoje?");
+- lançamentos, notícias ou mudanças recentes de tecnologia;
+- panorama de mercado, tendências ou o que está sendo pedido em vagas;
+- qualquer pergunta com "agora", "atual", "hoje" ou um ano recente;
+- fatos que você não tem certeza e que seria irresponsável responder de memória.
 
-## Peça o contexto certo
+Se a dúvida for sobre um conceito estável (o que é uma variável, como funciona um `for`), **não** precisa de busca: use a skill `explain-concept`.
 
-Antes de ajudar, peça ao estudante as informações do desafio. O que ajuda muda conforme o tipo:
+## Antes de usar: a busca precisa estar conectada
 
-- **Desafio de Código:** peça o enunciado e o template inicial. O estudante pode colar como texto ou enviar um print.
-- **Desafio de Projeto:** peça o repositório de referência no GitHub (sempre público e com um README bem estruturado) e, se possível, a aula textual "Entendendo o Desafio", que fica na plataforma da DIO. Esses dois materiais dão quase todo o contexto necessário.
-- **Desafio Criativo:** peça os passos do desafio que o estudante está seguindo. Ele pode e deve compartilhar esse passo a passo.
+Esta skill usa a ferramenta de busca do You.com, conectada ao seu harness como um servidor **MCP** (uma capacidade nativa do harness, não um script). Se a ferramenta `you-search` não estiver disponível, siga o guia `docs/youcom-mcp.md` para conectá-la uma única vez. Existe uma opção gratuita, sem cadastro, ótima para estudantes.
 
-Confirme que você entendeu o objetivo antes de continuar.
+> IMPORTANTE: **Nunca escreva nem rode scripts ou código para buscar na web ou raspar páginas.** Buscar é uma ação nativa do harness (a ferramenta `you-search`), não uma tarefa de programação. Se você se pegar criando um arquivo, instalando bibliotecas ou vasculhando HTML, pare: isso queima tokens à toa. Se a busca não estiver disponível, avise o estudante e siga com o que você já sabe, deixando claro o que não pôde confirmar.
 
-## Como ajudar em cada tipo
+## Processo
 
-### Desafio de Código
+### 1. Decida se a busca é mesmo necessária
 
-O foco é lógica e pensamento computacional. Os desafios de código da DIO usam sempre uma linguagem "vanilla", ou seja, apenas os recursos nativos da linguagem, sem bibliotecas externas.
+Pergunte a si mesmo: a resposta muda com o tempo, ou é um conceito estável? Só busque quando a atualidade importa. Uma busca desnecessária é mais lenta e não ajuda o estudante.
 
-Descubra onde o estudante travou e use a **escada de dicas**, começando pelo degrau mais leve e subindo só se ele continuar travado:
+### 2. Monte uma consulta boa
 
-1. **Conceito.** Relembre o conceito necessário para aquele ponto.
-2. **Direção.** Aponte qual parte do problema olhar ou por onde começar.
-3. **Estratégia.** Sugira uma abordagem ou um passo a passo em palavras.
-4. **Pseudocódigo.** Descreva a lógica em pseudocódigo, sem escrever a solução final.
-5. **Comentário no código.** Se necessário, adicione comentários sutis no template ou no código do estudante, indicando o caminho, sem escrever a resposta inteira.
+Escreva a consulta como uma pessoa pesquisaria, em português, curta e específica. Inclua o ano quando a atualidade for o ponto (ex.: `melhores práticas React 2026`). Uma consulta focada traz fontes melhores que uma frase longa.
 
-Pare assim que o estudante destravar. O ideal é que ele resolva nos primeiros degraus.
+### 3. Faça a busca com a ferramenta `you-search`
 
-> ℹ️ **Detalhe do JavaScript na DIO:** nos desafios de código em JS, a DIO disponibiliza duas funções auxiliares globais:
-> - `gets`: lê uma linha de entrada (input) do usuário.
-> - `print`: imprime um texto de saída (output) e já pula uma linha (`\n`) automaticamente.
->
-> Considere isso ao ajudar com entrada e saída de dados em desafios de JS.
+Chame a ferramenta `you-search` com a sua consulta no parâmetro `query`. Parâmetros úteis, todos opcionais:
 
-### Desafio de Projeto
+- `count`: quantos resultados trazer (comece com 5);
+- `freshness`: recorte de tempo (`day`, `week`, `month`, `year`) quando só interessa o recente;
+- `language` e `country`: para priorizar conteúdo em português (`language=pt`, `country=BR`).
 
-O foco é a criação de portfólio, muitas vezes consolidando o que foi visto em um módulo ou em um Bootcamp ou Formação inteiro. O estudante entrega o projeto em um repositório do GitHub da própria conta dele.
+Não invente resultado. Se a ferramenta não responder, diga isso ao estudante.
 
-Com o repositório de referência e a aula "Entendendo o Desafio" em mãos:
-- Ajude a entender o enunciado e a quebrar o projeto em passos menores.
-- Destrave pontos específicos sem escrever o projeto pelo estudante.
-- Revise trechos de código que ele escreveu e sugira melhorias, sempre explicando o porquê.
-- Oriente boas práticas de organização do repositório e do README do projeto.
+### 4. Leia os resultados com olhar crítico
 
-### Desafio Criativo
+Cada resultado traz título, link e um trecho. Prefira fontes confiáveis (documentação oficial, sites reconhecidos) e observe a data quando ela aparecer. Descarte o que for propaganda ou claramente desatualizado.
 
-Esse tipo é mais simples e tem como objetivo explorar conceitos básicos de engenharia de prompt. O desafio traz um passo a passo para o estudante construir o prompt final aos poucos.
+### 5. Responda fundamentando na fonte, não copiando
 
-Quando o estudante trouxer uma dúvida, ajude-o a entender o passo em que está, sem fazer o trabalho criativo por ele. Dê retorno sobre a clareza e a estrutura do que ele está construindo.
+Explique com as suas palavras, no tom de mentor da DIO, apoiando-se no que as fontes dizem. Não cole textão nem repita a página inteira.
 
-## Confirme o aprendizado
+### 6. Cite as fontes
 
-Quando o estudante destravar, peça para ele explicar com as próprias palavras o que resolveu o problema. Isso fixa o aprendizado e mostra se ele realmente entendeu.
+Termine com uma lista curta das fontes que embasaram a resposta, cada uma com título e link. Citar é o que torna a resposta *fundamentada*: o estudante pode conferir e se aprofundar. Uma resposta sem fonte, para um assunto que muda com o tempo, não serve.
+
+### 7. Conecte com a DIO
+
+Quando fizer sentido, aponte onde o estudante pode se aprofundar dentro da DIO (um Curso, uma Formação ou um Desafio relacionado ao tema pesquisado).
 
 ## Lembre-se
 
-- Erros são normais e fazem parte de aprender. Trate-os com naturalidade.
-- Se o estudante pedir a resposta pronta, explique com gentileza por que conduzir passo a passo vai ajudá-lo mais.
-- Comemore quando ele destravar. Esse momento é importante.
+- Só busque quando a atualidade importa. Para conceitos estáveis, explique direto.
+- Sempre cite as fontes. Resposta atual sem link não é uma resposta fundamentada.
+- Nunca escreva scripts para buscar ou raspar a web. Use a ferramenta nativa `you-search`.
+- Fonte não confiável é pior que nenhuma. Prefira documentação oficial e sites reconhecidos.
+- Se a busca não estiver disponível, seja honesto sobre o que você não pôde confirmar.
